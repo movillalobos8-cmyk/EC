@@ -1,0 +1,429 @@
+fileFormatVersion: 2
+guid: 69fffc830a395db488036a5ad79e582a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5652517619989806238
+    second: _perdiste_panel_0
+  - first:
+      213: 5967747441326178023
+    second: _perdiste_panel_1
+  - first:
+      213: 5364535085830972195
+    second: _perdiste_panel_2
+  - first:
+      213: -1626300098912591438
+    second: _perdiste_panel_3
+  - first:
+      213: 9169748344430542791
+    second: _perdiste_panel_4
+  - first:
+      213: 4758375036206995716
+    second: _perdiste_panel_5
+  - first:
+      213: -1179288864421710892
+    second: _perdiste_panel_6
+  - first:
+      213: -7686739433326907225
+    second: _perdiste_panel_7
+  - first:
+      213: 2388635618123742099
+    second: _perdiste_panel_8
+  - first:
+      213: -4314382322536998791
+    second: _perdiste_panel_9
+  - first:
+      213: 5246942559447811240
+    second: _perdiste_panel_10
+  - first:
+      213: -5059463400635881408
+    second: _perdiste_panel_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: _perdiste_panel_0
+      rect:
+        serializedVersion: 2
+        x: 1654
+        y: 1239
+        width: 114
+        height: 162
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9cf02ab3d6c17e40800000000000000
+      internalID: 5652517619989806238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_1
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 839
+        width: 226
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ee3e7deda2b1d250800000000000000
+      internalID: 5967747441326178023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_2
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 839
+        width: 210
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3232310fc38a27a40800000000000000
+      internalID: 5364535085830972195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_3
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 839
+        width: 210
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b1e1223da83e69e0800000000000000
+      internalID: -1626300098912591438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_4
+      rect:
+        serializedVersion: 2
+        x: 822
+        y: 839
+        width: 178
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cf328d298d714f70800000000000000
+      internalID: 9169748344430542791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_5
+      rect:
+        serializedVersion: 2
+        x: 1062
+        y: 839
+        width: 82
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 409543d62e4290240800000000000000
+      internalID: 4758375036206995716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_6
+      rect:
+        serializedVersion: 2
+        x: 1190
+        y: 839
+        width: 194
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d3f194a60352afe0800000000000000
+      internalID: -1179288864421710892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_7
+      rect:
+        serializedVersion: 2
+        x: 1414
+        y: 839
+        width: 194
+        height: 338
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a0ff832637335590800000000000000
+      internalID: -7686739433326907225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_8
+      rect:
+        serializedVersion: 2
+        x: 1574
+        y: 839
+        width: 242
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39b7c1c6073262120800000000000000
+      internalID: 2388635618123742099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_9
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 647
+        width: 98
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97815ffd22c3024c0800000000000000
+      internalID: -4314382322536998791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_10
+      rect:
+        serializedVersion: 2
+        x: 694
+        y: 567
+        width: 370
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a404c45572e0d840800000000000000
+      internalID: 5246942559447811240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _perdiste_panel_11
+      rect:
+        serializedVersion: 2
+        x: 1078
+        y: 567
+        width: 178
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0482203e7dc29c9b0800000000000000
+      internalID: -5059463400635881408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      _perdiste_panel_0: 5652517619989806238
+      _perdiste_panel_1: 5967747441326178023
+      _perdiste_panel_10: 5246942559447811240
+      _perdiste_panel_11: -5059463400635881408
+      _perdiste_panel_2: 5364535085830972195
+      _perdiste_panel_3: -1626300098912591438
+      _perdiste_panel_4: 9169748344430542791
+      _perdiste_panel_5: 4758375036206995716
+      _perdiste_panel_6: -1179288864421710892
+      _perdiste_panel_7: -7686739433326907225
+      _perdiste_panel_8: 2388635618123742099
+      _perdiste_panel_9: -4314382322536998791
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

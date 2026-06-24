@@ -1,0 +1,585 @@
+fileFormatVersion: 2
+guid: a45892dd4c054fd4aa7695cd260ece05
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8869646576502519606
+    second: _lo_conseguiste_panel_0
+  - first:
+      213: -1532272630897120768
+    second: _lo_conseguiste_panel_1
+  - first:
+      213: -2121683814415682408
+    second: _lo_conseguiste_panel_2
+  - first:
+      213: 3326133131666653971
+    second: _lo_conseguiste_panel_3
+  - first:
+      213: -4972923758916272161
+    second: _lo_conseguiste_panel_4
+  - first:
+      213: 3267205178724100425
+    second: _lo_conseguiste_panel_5
+  - first:
+      213: 5446141184718861622
+    second: _lo_conseguiste_panel_6
+  - first:
+      213: -3855675618967276984
+    second: _lo_conseguiste_panel_7
+  - first:
+      213: -4022491416186684901
+    second: _lo_conseguiste_panel_8
+  - first:
+      213: 6012319532511698371
+    second: _lo_conseguiste_panel_9
+  - first:
+      213: 301164064274595589
+    second: _lo_conseguiste_panel_10
+  - first:
+      213: -4720313303122065250
+    second: _lo_conseguiste_panel_11
+  - first:
+      213: 6698078942180917917
+    second: _lo_conseguiste_panel_12
+  - first:
+      213: -3177304625642562177
+    second: _lo_conseguiste_panel_13
+  - first:
+      213: 4125632354279402286
+    second: _lo_conseguiste_panel_14
+  - first:
+      213: -2522022140513791975
+    second: _lo_conseguiste_panel_15
+  - first:
+      213: 9003226477650492565
+    second: _lo_conseguiste_panel_16
+  - first:
+      213: 7840850444312893687
+    second: _lo_conseguiste_panel_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_0
+      rect:
+        serializedVersion: 2
+        x: 575
+        y: 1231
+        width: 146
+        height: 194
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63731b36190571b70800000000000000
+      internalID: 8869646576502519606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_1
+      rect:
+        serializedVersion: 2
+        x: 799
+        y: 1007
+        width: 146
+        height: 338
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00ae25819264cbae0800000000000000
+      internalID: -1532272630897120768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_2
+      rect:
+        serializedVersion: 2
+        x: 991
+        y: 1007
+        width: 162
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 894be0cdfc34e82e0800000000000000
+      internalID: -2121683814415682408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_3
+      rect:
+        serializedVersion: 2
+        x: 1855
+        y: 1087
+        width: 130
+        height: 162
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31306ace57cc82e20800000000000000
+      internalID: 3326133131666653971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_4
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 719
+        width: 194
+        height: 242
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdff1be5030acfab0800000000000000
+      internalID: -4972923758916272161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_5
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 719
+        width: 178
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 949aa26bcc1775d20800000000000000
+      internalID: 3267205178724100425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_6
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 719
+        width: 194
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 635fac77d84949b40800000000000000
+      internalID: 5446141184718861622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_7
+      rect:
+        serializedVersion: 2
+        x: 591
+        y: 719
+        width: 162
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 842325ae373ed7ac0800000000000000
+      internalID: -3855675618967276984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_8
+      rect:
+        serializedVersion: 2
+        x: 767
+        y: 719
+        width: 130
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1a722a7e5d3d28c0800000000000000
+      internalID: -4022491416186684901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_9
+      rect:
+        serializedVersion: 2
+        x: 943
+        y: 719
+        width: 130
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cd908b92cc007350800000000000000
+      internalID: 6012319532511698371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_10
+      rect:
+        serializedVersion: 2
+        x: 1103
+        y: 719
+        width: 178
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50f333eee13fd2400800000000000000
+      internalID: 301164064274595589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_11
+      rect:
+        serializedVersion: 2
+        x: 1327
+        y: 911
+        width: 82
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e98cbd26f041e7eb0800000000000000
+      internalID: -4720313303122065250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_12
+      rect:
+        serializedVersion: 2
+        x: 1407
+        y: 719
+        width: 178
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d92c73a5f4b54fc50800000000000000
+      internalID: 6698078942180917917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_13
+      rect:
+        serializedVersion: 2
+        x: 1583
+        y: 719
+        width: 178
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7d9e5de642f7e3d0800000000000000
+      internalID: -3177304625642562177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_14
+      rect:
+        serializedVersion: 2
+        x: 1711
+        y: 719
+        width: 210
+        height: 258
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2baea684c0314930800000000000000
+      internalID: 4125632354279402286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_15
+      rect:
+        serializedVersion: 2
+        x: 1295
+        y: 719
+        width: 98
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9105107b93afffcd0800000000000000
+      internalID: -2522022140513791975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_16
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 543
+        width: 98
+        height: 114
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59cbfb0c7c2e1fc70800000000000000
+      internalID: 9003226477650492565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _lo_conseguiste_panel_17
+      rect:
+        serializedVersion: 2
+        x: 1311
+        y: 543
+        width: 114
+        height: 114
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f8db3ebfeb40dc60800000000000000
+      internalID: 7840850444312893687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      _lo_conseguiste_panel_0: 8869646576502519606
+      _lo_conseguiste_panel_1: -1532272630897120768
+      _lo_conseguiste_panel_10: 301164064274595589
+      _lo_conseguiste_panel_11: -4720313303122065250
+      _lo_conseguiste_panel_12: 6698078942180917917
+      _lo_conseguiste_panel_13: -3177304625642562177
+      _lo_conseguiste_panel_14: 4125632354279402286
+      _lo_conseguiste_panel_15: -2522022140513791975
+      _lo_conseguiste_panel_16: 9003226477650492565
+      _lo_conseguiste_panel_17: 7840850444312893687
+      _lo_conseguiste_panel_2: -2121683814415682408
+      _lo_conseguiste_panel_3: 3326133131666653971
+      _lo_conseguiste_panel_4: -4972923758916272161
+      _lo_conseguiste_panel_5: 3267205178724100425
+      _lo_conseguiste_panel_6: 5446141184718861622
+      _lo_conseguiste_panel_7: -3855675618967276984
+      _lo_conseguiste_panel_8: -4022491416186684901
+      _lo_conseguiste_panel_9: 6012319532511698371
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
