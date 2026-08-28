@@ -108,6 +108,8 @@ public class DialogueManager : MonoBehaviour
 
     public DialogueLine[] lines;
 
+    private Coroutine typeRoutine;
+
     void Awake()
     {
         VideoPlayer[] vps = FindObjectsOfType<VideoPlayer>();
@@ -124,7 +126,6 @@ public class DialogueManager : MonoBehaviour
     {
         Debug.Log("START");
 
-       
         if (endingVideo != null)
         {
             endingVideo.Stop();
@@ -132,7 +133,6 @@ public class DialogueManager : MonoBehaviour
             endingVideo.time = 0;
             endingVideo.enabled = false;
         }
-
 
         Debug.Log("1");
         hinchazonPanel1.SetActive(false);
@@ -166,7 +166,6 @@ public class DialogueManager : MonoBehaviour
         lines = new DialogueLine[]
         {
             // SECRETARIA
-
             new DialogueLine
             {
                 characterName = "Secretaria",
@@ -196,7 +195,6 @@ public class DialogueManager : MonoBehaviour
             },
 
             // SECRETARIA CONTINÚA
-
             new DialogueLine
             {
                 characterName = "Secretaria",
@@ -225,7 +223,6 @@ public class DialogueManager : MonoBehaviour
             },
 
             // DOCTOR SOLO
-
             new DialogueLine
             {
                 characterName = "Doctor Jacinto",
@@ -263,7 +260,6 @@ public class DialogueManager : MonoBehaviour
             },
 
             // AMBOS
-
             new DialogueLine
             {
                 characterName = "Secretaria",
@@ -295,7 +291,6 @@ public class DialogueManager : MonoBehaviour
             },
 
             // SECRETARIA SALE
-
             new DialogueLine
             {
                 characterName = "Secretaria",
@@ -307,7 +302,6 @@ public class DialogueManager : MonoBehaviour
             },
 
             // DOCTOR SOLO
-
             new DialogueLine
             {
                 characterName = "Doctor Jacinto",
@@ -336,7 +330,6 @@ public class DialogueManager : MonoBehaviour
             },
 
             // DENIS ENTRA
-
             new DialogueLine
             {
                 characterName = "Denis",
@@ -368,7 +361,6 @@ public class DialogueManager : MonoBehaviour
             },
 
             // ÚLTIMO DIÁLOGO
-
             new DialogueLine
             {
                 characterName = "Doctor Jacinto",
@@ -391,7 +383,7 @@ public class DialogueManager : MonoBehaviour
             musicSource.Play();
         }
 
-        StartCoroutine(TypeLine());
+        StartNextTypeLine();
     }
 
     void ApplyCharacterSize(Image image, Vector2 size)
@@ -422,8 +414,7 @@ public class DialogueManager : MonoBehaviour
                     return;
                 }
 
-                if (!answeredQuestion &&
-                    currentLine == lines.Length - 1)
+                if (!answeredQuestion && currentLine == lines.Length - 1)
                 {
                     ShowChoices();
                     return;
@@ -432,6 +423,15 @@ public class DialogueManager : MonoBehaviour
                 NextLine();
             }
         }
+    }
+
+    void StartNextTypeLine()
+    {
+        if (typeRoutine != null)
+        {
+            StopCoroutine(typeRoutine);
+        }
+        typeRoutine = StartCoroutine(TypeLine());
     }
 
     IEnumerator TypeLine()
@@ -446,15 +446,15 @@ public class DialogueManager : MonoBehaviour
         hinchazonPanel1.SetActive(false);
         hinchazonPanel2.SetActive(false);
 
-        // Mostrar paneles de hinchazón
-        if (line.text == "Y mire… esta parte está más hinchada que la otra.")
+        // Mostrar paneles de hinchazón sólo en esta frase específica
+        if (line.text.Contains("esta parte está más hinchada que la otra"))
         {
             hinchazonPanel1.SetActive(true);
             hinchazonPanel2.SetActive(true);
         }
 
-        // Mostrar paneles de diagnóstico
-        if (currentLine >= 21)
+        // Mostrar paneles de diagnóstico en la última pregunta
+        if (currentLine == lines.Length - 1)
         {
             diagnosticoPanel1.SetActive(true);
             diagnosticoPanel2.SetActive(true);
@@ -489,7 +489,6 @@ public class DialogueManager : MonoBehaviour
         }
 
         // FONDO
-
         if (line.showBothCharacters)
         {
             backgroundImage.sprite = doctorBackground;
@@ -507,7 +506,6 @@ public class DialogueManager : MonoBehaviour
         }
 
         // PERSONAJES
-
         if (line.showBothCharacters)
         {
             leftCharacterImage.gameObject.SetActive(true);
@@ -533,7 +531,7 @@ public class DialogueManager : MonoBehaviour
             {
                 ApplyCharacterSize(rightCharacterImage, doctorSize);
 
-                if (currentLine >= 14)
+                if (currentLine >= 17)
                 {
                     ApplyCharacterSize(leftCharacterImage, denisSize);
                     leftCharacterImage.sprite = denisIdle;
@@ -578,57 +576,34 @@ public class DialogueManager : MonoBehaviour
         }
 
         // TEXTO
-
         foreach (char c in line.text)
         {
             dialogueText.text += c;
-
             yield return new WaitForSeconds(textSpeed);
         }
 
         isTyping = false;
 
         // IDLE
-
-        if (line.showBothCharacters)
-        {
-            if (line.characterName == "Secretaria")
-            {
-                leftCharacterImage.sprite = secretariaIdle;
-            }
-            else if (line.characterName == "Denis")
-            {
-                leftCharacterImage.sprite = denisIdle;
-            }
-            else
-            {
-                rightCharacterImage.sprite = doctorIdle;
-            }
-        }
-        else
-        {
-            if (line.isLeftCharacter)
-            {
-                leftCharacterImage.sprite = line.idleSprite;
-            }
-            else
-            {
-                rightCharacterImage.sprite = line.idleSprite;
-            }
-        }
+        SetCharacterIdle(line);
     }
 
     void CompleteLine()
     {
-        StopAllCoroutines();
+        if (typeRoutine != null)
+        {
+            StopCoroutine(typeRoutine);
+        }
 
         DialogueLine line = lines[currentLine];
-        
-
         dialogueText.text = line.text;
-
         isTyping = false;
 
+        SetCharacterIdle(line);
+    }
+
+    void SetCharacterIdle(DialogueLine line)
+    {
         if (line.showBothCharacters)
         {
             if (line.characterName == "Secretaria")
@@ -670,46 +645,28 @@ public class DialogueManager : MonoBehaviour
         }
 
         // PEDIR NOMBRE
-
         if (!askedName && currentLine == 3)
         {
             askedName = true;
-
             inputPanel.SetActive(true);
-
             return;
         }
 
         // FIN
-
         if (currentLine >= lines.Length)
         {
             dialogueText.text = "";
             return;
         }
 
-        StopAllCoroutines();
-
-        if (currentLine > 17)
-        {
-            hinchazonPanel1.SetActive(false);
-            hinchazonPanel2.SetActive(false);
-
-            diagnosticoPanel1.SetActive(true);
-            diagnosticoPanel2.SetActive(true);
-        }
-
-        StartCoroutine(TypeLine());
+        StartNextTypeLine();
     }
 
     public void ConfirmName()
     {
         string input = nameInput.text;
-
-        // elimina espacios invisibles
         input = input.Trim();
 
-        // BLOQUEO: mínimo 1 carácter real
         if (input.Length < 1)
         {
             dialogueText.text = "Debes escribir tu nombre o no podremos continuar";
@@ -718,22 +675,22 @@ public class DialogueManager : MonoBehaviour
 
         playerName = input;
 
+        PlayerPrefs.SetString("NombreJugador", playerName);
+        PlayerPrefs.Save();
+
         inputPanel.SetActive(false);
 
         for (int i = 0; i < lines.Length; i++)
         {
-            lines[i].text =
-                lines[i].text.Replace("PLAYER_NAME", playerName);
+            lines[i].text = lines[i].text.Replace("PLAYER_NAME", playerName);
         }
 
-        StopAllCoroutines();
-        StartCoroutine(TypeLine());
+        StartNextTypeLine();
     }
 
     void ShowChoices()
     {
         waitingChoice = true;
-
         choicePanel.SetActive(true);
 
         option1Button.onClick.RemoveAllListeners();
@@ -756,12 +713,10 @@ public class DialogueManager : MonoBehaviour
         });
     }
 
-        void WrongAnswer(string wrongCondition)
+    void WrongAnswer(string wrongCondition)
     {
         answeredQuestion = true;
-
         choicePanel.SetActive(false);
-
         waitingChoice = false;
 
         diagnosticoPanel1.SetActive(false);
@@ -774,12 +729,11 @@ public class DialogueManager : MonoBehaviour
 
         endingReady = true;
     }
-        void CorrectAnswer()
+
+    void CorrectAnswer()
     {
         answeredQuestion = true;
-
         choicePanel.SetActive(false);
-
         waitingChoice = false;
 
         diagnosticoPanel1.SetActive(false);
@@ -796,35 +750,14 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(EndingSequence());
     }
 
-        public void ShowDefinition1()
-    {
-        definition1.SetActive(true);
-    }
+    public void ShowDefinition1() { definition1.SetActive(true); }
+    public void HideDefinition1() { definition1.SetActive(false); }
 
-    public void HideDefinition1()
-    {
-        definition1.SetActive(false);
-    }
+    public void ShowDefinition2() { definition2.SetActive(true); }
+    public void HideDefinition2() { definition2.SetActive(false); }
 
-    public void ShowDefinition2()
-    {
-        definition2.SetActive(true);
-    }
-
-    public void HideDefinition2()
-    {
-        definition2.SetActive(false);
-    }
-
-    public void ShowDefinition3()
-    {
-        definition3.SetActive(true);
-    }
-
-    public void HideDefinition3()
-    {
-        definition3.SetActive(false);
-    }
+    public void ShowDefinition3() { definition3.SetActive(true); }
+    public void HideDefinition3() { definition3.SetActive(false); }
 
     IEnumerator EndingSequence()
     {

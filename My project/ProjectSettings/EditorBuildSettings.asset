@@ -17,6 +17,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Primer boss.unity
     guid: 0e48a88d5b6cf3c43910b0868ccee929
+  - enabled: 1
+    path: "Assets/Scenes/Introducci\xF3n 2.unity"
+    guid: c6da624492ec2604da805f93ac36e4c3
+  - enabled: 1
+    path: Assets/Scenes/Segundo Nivel.unity
+    guid: 4ebe57f3cce8de949910c8a79590c158
+  - enabled: 1
+    path: Assets/Scenes/Segundo boss.unity
+    guid: 0333989bcc764984cbdcff0e8b03ce38
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

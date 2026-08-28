@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
 {
     private const int FirstLevelSceneBuildIndex = 0;
     private const int MenuSceneBuildIndex = 1;
+    private const int SecondLevelSceneBuildIndex = 5; // Índice de la escena del Nivel 2
 
     [Header("UI Panels")]
     public GameObject gameOverPanel;
@@ -34,7 +35,6 @@ public class GameManager : MonoBehaviour
         }
 
         gameOverPanel.SetActive(true);
-
         Time.timeScale = 0f;
     }
 
@@ -49,19 +49,25 @@ public class GameManager : MonoBehaviour
         }
 
         winPanel.SetActive(true);
-
         Time.timeScale = 0f;
     }
 
     public void RestartGame()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; // Restaura el tiempo antes de cambiar de escena
         SceneManager.LoadScene(FirstLevelSceneBuildIndex);
     }
 
     public void BackToMenu()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; // Restaura el tiempo
         SceneManager.LoadScene(MenuSceneBuildIndex);
+    }
+
+    // Nuevo método para ir al Nivel 2 (Escena 5)
+    public void GoToNextLevel()
+    {
+        Time.timeScale = 1f; // Restaura el tiempo
+        SceneManager.LoadScene(SecondLevelSceneBuildIndex);
     }
 }

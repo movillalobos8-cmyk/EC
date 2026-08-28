@@ -5914,7 +5914,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1874117811}
         m_TargetAssemblyTypeName: LevelButtons, Assembly-CSharp
-        m_MethodName: RestartGame
+        m_MethodName: RestartLvl1
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
