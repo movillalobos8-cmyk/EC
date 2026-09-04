@@ -2874,7 +2874,7 @@ MonoBehaviour:
   hitboxExtraEmbestida: {fileID: 1897764892}
   pisoIzquierdo: {fileID: 343295959}
   pisoDerecho: {fileID: 914884731}
-  disparosPorBarra: 20
+  disparosPorBarra: 15
   totalBarras: 9
   impactosTotalesActuales: 0
   imagenBarraVidaUI: {fileID: 1726064800}
