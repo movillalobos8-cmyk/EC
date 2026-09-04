@@ -1,0 +1,104 @@
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System.Collections;
+
+public class SecretariaTutorialManagerNivel2 : MonoBehaviour
+{
+    [Header("UI del Tutorial (Objeto dentro del Canvas)")]
+    public GameObject uiTutorial; // Arrastra el GameObject contenedor del tutorial
+    public TMP_Text dialogueText;
+    public Button continueButton;
+
+    [Header("Secretaria")]
+    public Image secretariaImage;
+    public Sprite idleSprite;
+    public Sprite talkingSprite;
+
+    [Header("Imágenes del Tutorial")]
+    public Image imagenNeumococo; 
+    public Image imagenBotas;     
+
+    [Header("Texto del Tutorial")]
+    [TextArea(8, 15)]
+    public string tutorialText = "¡Estás dentro del cuerpo de Dalia! Ella básicamente te respiró a ti y al doctor!\nComo verás, estás controlando un muy pequeño robot. Esta herramienta te permitirá pasar por los bronquios de Dalia.\n\n¿Ves esto? Es el neumococo, un tipo de neumonía. Con el dr. Jacinto creemos que es esta bacteria la que está afectando a Dalia.\n\nSi te encuentras con algo como esto, no dudes en eliminarlo saltando por arriba de él, pues las botas del robot que manejas tienen un antibacterial que ayudará a Dalia. Ten cuidado, el sistema no es seguro.";
+
+    [Header("Puntos de Activación de Imágenes")]
+    public string fraseTriggerImagen1 = "¿Ves esto?";
+    public string fraseTriggerImagen2 = "Si te encuentras con algo como esto";
+
+    [Header("Spawners a Activar al Finalizar")]
+    public ObstacleSpawner[] obstacleSpawners;
+
+    [Header("Configuración")]
+    public float textSpeed = 0.03f;
+
+    private void Start()
+    {
+        if (uiTutorial != null) uiTutorial.SetActive(true);
+        if (continueButton != null) continueButton.gameObject.SetActive(false);
+
+        if (imagenNeumococo != null) imagenNeumococo.gameObject.SetActive(false);
+        if (imagenBotas != null) imagenBotas.gameObject.SetActive(false);
+
+        foreach (ObstacleSpawner spawner in obstacleSpawners)
+        {
+            if (spawner != null) spawner.enabled = false;
+        }
+
+        Time.timeScale = 0f;
+
+        StartCoroutine(EscribirTextoTutorial());
+    }
+
+    private IEnumerator EscribirTextoTutorial()
+    {
+        dialogueText.text = "";
+
+        if (secretariaImage != null) secretariaImage.sprite = talkingSprite;
+
+        for (int i = 0; i < tutorialText.Length; i++)
+        {
+            dialogueText.text += tutorialText[i];
+
+            if (!string.IsNullOrEmpty(fraseTriggerImagen1) && dialogueText.text.EndsWith(fraseTriggerImagen1))
+            {
+                if (imagenNeumococo != null) imagenNeumococo.gameObject.SetActive(true);
+                if (imagenBotas != null) imagenBotas.gameObject.SetActive(false);
+            }
+
+            if (!string.IsNullOrEmpty(fraseTriggerImagen2) && dialogueText.text.EndsWith(fraseTriggerImagen2))
+            {
+                if (imagenNeumococo != null) imagenNeumococo.gameObject.SetActive(false);
+                if (imagenBotas != null) imagenBotas.gameObject.SetActive(true);
+            }
+
+            yield return new WaitForSecondsRealtime(textSpeed);
+        }
+
+        if (secretariaImage != null) secretariaImage.sprite = idleSprite;
+        if (continueButton != null) continueButton.gameObject.SetActive(true);
+    }
+
+    public void ContinuarJuego()
+    {
+        // Desactiva la UI del tutorial directamente
+        if (uiTutorial != null) 
+        {
+            uiTutorial.SetActive(false);
+        }
+
+        // Encender los spawners y despausar el juego
+        foreach (ObstacleSpawner spawner in obstacleSpawners)
+        {
+            if (spawner != null) spawner.enabled = true;
+        }
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.StartLevel();
+        }
+
+        Time.timeScale = 1f;
+    }
+}

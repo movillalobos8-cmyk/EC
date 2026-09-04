@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class VidaJugador : MonoBehaviour
 {
     [Header("Audio Manager")]
-    public GameMusicManager musicManager; // Arrastra el objeto con GameMusicManager desde el Inspector
+    public GameMusicManager musicManager;
 
     [Header("Interfaz UI (Corazones y Game Over)")]
     public Image[] corazones;            
@@ -39,7 +39,6 @@ public class VidaJugador : MonoBehaviour
 
         saludActual = saludMaxima;
 
-        // Búsqueda automática del GameMusicManager si no se asignó manualmente
         if (musicManager == null)
         {
             musicManager = FindObjectOfType<GameMusicManager>();
@@ -55,9 +54,16 @@ public class VidaJugador : MonoBehaviour
 
     public void RecibirDanio(int cantidadDanio, Vector2 posicionOrigen, bool ignorarInmunidad = false)
     {
+        // BLINDAJE DE SEGURIDAD: Si está en inmunidad o muerto, IGNORA CUALQUIER OTRO GOLPE
         if ((esInvulnerable && !ignorarInmunidad) || estaMuerto) return;
 
-        // 1. Restar vida
+        // Activa la invulnerabilidad DE INMEDIATO para evitar multillegadas en el mismo frame
+        if (!ignorarInmunidad)
+        {
+            esInvulnerable = true;
+        }
+
+        // 1. Restar vida (fijado a 1 por golpe normal si no es vacío)
         saludActual -= cantidadDanio;
         if (saludActual < 0) saludActual = 0;
 
@@ -70,7 +76,7 @@ public class VidaJugador : MonoBehaviour
             return;
         }
 
-        // 3. Aplicar empujón de golpe (Knockback)
+        // 3. Aplicar empujón (Knockback)
         if (rb != null && posicionOrigen != Vector2.zero)
         {
             float dirX = transform.position.x < posicionOrigen.x ? -1f : 1f;
@@ -86,20 +92,16 @@ public class VidaJugador : MonoBehaviour
     {
         estaMuerto = true;
 
-        // Detener movimiento
         if (rb != null) rb.linearVelocity = Vector2.zero;
 
-        // Desactivar controles
         ControladorDelJugador scriptMov = GetComponent<ControladorDelJugador>();
         if (scriptMov != null) scriptMov.enabled = false;
 
-        // Detener música de fondo y reproducir el sonido de Game Over
         if (musicManager != null)
         {
             musicManager.PlayLoseSound();
         }
 
-        // Mostrar pantalla de Game Over
         if (canvasGameOver != null)
         {
             canvasGameOver.SetActive(true);
@@ -127,7 +129,6 @@ public class VidaJugador : MonoBehaviour
 
     private IEnumerator RutinaInmunidad()
     {
-        esInvulnerable = true;
         float tiempo = 0f;
 
         while (tiempo < tiempoInmunidad)
@@ -138,14 +139,13 @@ public class VidaJugador : MonoBehaviour
         }
 
         if (sr != null) sr.enabled = true;
-        esInvulnerable = false;
+        esInvulnerable = false; // Aquí recién recupera la vulnerabilidad
     }
 
-    // --- COLISIONES CON ENEMIGOS, PROYECTILES, VACÍO O FIN DE NIVEL ---
+    // --- DETECCIÓN DE COLISIONES ---
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Cambiar a la escena 6 al tocar el piso con la etiqueta "End"
         if (collision.gameObject.CompareTag("End"))
         {
             Time.timeScale = 1f;
@@ -153,12 +153,11 @@ public class VidaJugador : MonoBehaviour
             return;
         }
 
-        // Detecta si el objeto se llama "Vacio" o tiene la etiqueta "Vacio"
         if (collision.gameObject.CompareTag("Vacio") || collision.gameObject.name.Contains("Vacio"))
         {
             RecibirDanio(saludActual, collision.transform.position, true);
         }
-        else if (collision.gameObject.CompareTag("Enemigo"))
+        else if (collision.gameObject.CompareTag("Enemigo") || collision.gameObject.CompareTag("Boss"))
         {
             RecibirDanio(1, collision.transform.position);
         }
@@ -166,7 +165,6 @@ public class VidaJugador : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Cambiar a la escena 6 al entrar a la zona con la etiqueta "End"
         if (collision.CompareTag("End"))
         {
             Time.timeScale = 1f;
@@ -174,12 +172,11 @@ public class VidaJugador : MonoBehaviour
             return;
         }
 
-        // Detecta si la zona Trigger se llama "Vacio" o tiene la etiqueta "Vacio"
         if (collision.CompareTag("Vacio") || collision.gameObject.name.Contains("Vacio"))
         {
             RecibirDanio(saludActual, collision.transform.position, true);
         }
-        else if (collision.CompareTag("Enemigo"))
+        else if (collision.CompareTag("Enemigo") || collision.CompareTag("Boss") || collision.CompareTag("ProyectilBoss"))
         {
             RecibirDanio(1, collision.transform.position);
         }

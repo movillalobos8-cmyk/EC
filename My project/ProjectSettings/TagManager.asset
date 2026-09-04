@@ -11,14 +11,16 @@ TagManager:
   - Jugador
   - Vacio
   - End
+  - Disparojugador
+  - Disparojefe
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Disparojefe
   - Water
   - UI
-  - 
+  - Disparojugador
   - 
   - 
   - 

@@ -9,6 +9,12 @@ public class ControladorDelJugador : MonoBehaviour
     public float fuerzaSalto = 12f;
     public float fuerzaDobleSalto = 9f;
 
+    [Header("Disparo del Jugador")]
+    public Transform puntoDisparoArriba;      
+    public GameObject prefabProyectilJugador;  
+    public float cadenciaDisparo = 0.25f; // Tiempo entre cada disparo continuo
+    private float timerDisparo;
+
     [Header("Sonidos de Salto")]
     public AudioClip sonidoSalto;
     public AudioClip sonidoDobleSalto;
@@ -20,19 +26,17 @@ public class ControladorDelJugador : MonoBehaviour
 
     private Rigidbody2D rb;
     private Animator animator;
-    private AudioSource audioSource; // Un solo AudioSource para todo
+    private AudioSource audioSource;
 
     private float entradaHorizontal;
     private bool mirandoDerecha = true;
 
-    // Control de suelo y saltos
     public bool estaEnSuelo = false;
     private int saltosRealizados = 0;
     private const int MAX_SALTOS = 2;
 
     private void Awake()
     {
-        // Obtenemos el único AudioSource del objeto
         audioSource = GetComponent<AudioSource>();
         audioSource.playOnAwake = false;
     }
@@ -47,16 +51,27 @@ public class ControladorDelJugador : MonoBehaviour
     {
         entradaHorizontal = Input.GetAxisRaw("Horizontal");
 
+        // --- SALTO ---
         if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             EjecutarSalto();
         }
 
+        // --- DISPARO CONTINUO (MANTENER TECLA E) ---
+        timerDisparo -= Time.deltaTime;
+        if (Input.GetKey(KeyCode.E) && timerDisparo <= 0f)
+        {
+            DispararHaciaArriba();
+            timerDisparo = cadenciaDisparo;
+        }
+
+        // --- GIRO ---
         if (entradaHorizontal > 0 && !mirandoDerecha) Girar();
         else if (entradaHorizontal < 0 && mirandoDerecha) Girar();
 
         ManejarSonidoPasos();
 
+        // --- ANIMATOR ---
         if (animator != null)
         {
             bool estaMoviendose = Mathf.Abs(entradaHorizontal) > 0.1f;
@@ -71,28 +86,44 @@ public class ControladorDelJugador : MonoBehaviour
         rb.linearVelocity = new Vector2(entradaHorizontal * velocidadMovimiento, rb.linearVelocity.y);
     }
 
+    private void DispararHaciaArriba()
+    {
+        if (prefabProyectilJugador != null && puntoDisparoArriba != null)
+        {
+            Instantiate(prefabProyectilJugador, puntoDisparoArriba.position, Quaternion.identity);
+        }
+
+        if (animator != null)
+        {
+            bool estaMoviendose = Mathf.Abs(entradaHorizontal) > 0.1f;
+
+            if (estaMoviendose)
+            {
+                animator.SetTrigger("disparoMove");
+            }
+            else
+            {
+                animator.SetTrigger("disparoIdle");
+            }
+        }
+    }
+
     private void ManejarSonidoPasos()
     {
         bool estaCaminando = Mathf.Abs(entradaHorizontal) > 0.1f && estaEnSuelo && Mathf.Abs(rb.linearVelocity.y) < 0.1f;
 
         if (estaCaminando)
         {
-            if (sonidoPasos != null)
+            if (sonidoPasos != null && !audioSource.isPlaying)
             {
-                // Si estaba sonando un salto, dejamos que termine antes de meter el loop de pasos
-                if (!audioSource.isPlaying)
-                {
-                    audioSource.clip = sonidoPasos;
-                    audioSource.volume = volumenPasos;
-                    audioSource.loop = true;
-                    audioSource.Play();
-                }
+                audioSource.clip = sonidoPasos;
+                audioSource.volume = volumenPasos;
+                audioSource.loop = true;
+                audioSource.Play();
             }
         }
         else
         {
-            // CLAVE: Solo detiene el AudioSource SI lo que está sonando actualmente son los pasos.
-            // Esto evita que detenga el sonido del salto o doble salto.
             if (audioSource.isPlaying && audioSource.clip == sonidoPasos)
             {
                 audioSource.Stop();
@@ -113,7 +144,6 @@ public class ControladorDelJugador : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, fuerzaDobleSalto);
             saltosRealizados = 2;
-            // Si no asignaste un sonido de doble salto especifico, usa el de salto normal
             AudioClip clipAJugar = (sonidoDobleSalto != null) ? sonidoDobleSalto : sonidoSalto;
             ReproducirSonidoSalto(clipAJugar);
         }
@@ -136,23 +166,6 @@ public class ControladorDelJugador : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Piso"))
-        {
-            estaEnSuelo = true;
-            saltosRealizados = 0;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Piso"))
-        {
-            estaEnSuelo = false;
-        }
-    }
-
     private void Girar()
     {
         mirandoDerecha = !mirandoDerecha;
@@ -165,7 +178,6 @@ public class ControladorDelJugador : MonoBehaviour
     {
         if (clip != null && audioSource != null)
         {
-            // Cortamos cualquier loop activo (como los pasos) para lanzar el salto inmediatamente
             audioSource.Stop();
             audioSource.PlayOneShot(clip, volumenSalto);
         }
