@@ -4,6 +4,8 @@ using TMPro;
 using System.Collections;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 [System.Serializable]
 public class DialogueLine
@@ -101,6 +103,7 @@ public class DialogueManager : MonoBehaviour
     bool isTyping = false;
     bool waitingChoice = false;
     bool answeredQuestion = false;
+    bool justCompleted = false;
 
     bool endingReady = false;
 
@@ -393,19 +396,41 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
-        if (inputPanel.activeSelf)
+        bool releaseInput = Keyboard.current != null &&
+                            (Keyboard.current.spaceKey.wasReleasedThisFrame ||
+                             Keyboard.current.enterKey.wasReleasedThisFrame ||
+                             Keyboard.current.numpadEnterKey.wasReleasedThisFrame);
+        releaseInput |= Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame;
+        if (releaseInput)
+            justCompleted = false;
+
+        // El diálogo no debe recibir controles mientras se pide el nombre,
+        // se muestran opciones o el video está activo.
+        if ((inputPanel != null && inputPanel.activeSelf) || waitingChoice ||
+            (videoPanel != null && videoPanel.activeSelf))
             return;
 
-        if (waitingChoice)
+        bool mousePressed = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+        if (mousePressed && PointerOverInteractiveUI())
             return;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        bool inputPressed = Keyboard.current != null &&
+                            (Keyboard.current.spaceKey.wasPressedThisFrame ||
+                             Keyboard.current.enterKey.wasPressedThisFrame ||
+                             Keyboard.current.numpadEnterKey.wasPressedThisFrame);
+        inputPressed |= mousePressed;
+
+        if (inputPressed)
         {
             if (isTyping)
             {
-                CompleteLine();
+                if (!justCompleted)
+                {
+                    CompleteLine();
+                    justCompleted = true;
+                }
             }
-            else
+            else if (!justCompleted)
             {
                 if (endingReady)
                 {
@@ -415,14 +440,33 @@ public class DialogueManager : MonoBehaviour
                 }
 
                 if (!answeredQuestion && currentLine == lines.Length - 1)
-                {
                     ShowChoices();
-                    return;
-                }
-
-                NextLine();
+                else
+                    NextLine();
             }
         }
+    }
+
+    bool PointerOverInteractiveUI()
+    {
+        if (EventSystem.current == null || Mouse.current == null)
+            return false;
+
+        var pointerEvent = new PointerEventData(EventSystem.current)
+        {
+            position = Mouse.current.position.ReadValue()
+        };
+        var raycastResults = new System.Collections.Generic.List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerEvent, raycastResults);
+
+        foreach (var result in raycastResults)
+        {
+            if (result.gameObject.GetComponentInParent<Button>() != null ||
+                result.gameObject.GetComponentInParent<TMP_InputField>() != null)
+                return true;
+        }
+
+        return false;
     }
 
     void StartNextTypeLine()

@@ -14,6 +14,9 @@ public class VidaJugador : MonoBehaviour
     public Sprite corazonVacio;          
     public GameObject canvasGameOver;    
 
+    [Header("Cambio de Escena / Final del Nivel")] // <-- NUEVO HEADER
+    public int indiceEscenaFinal = 6;              // <-- Puedes cambiar este número desde Unity
+
     [Header("Ajustes de Salud")]
     public int saludMaxima = 3;
     private int saludActual;
@@ -54,29 +57,24 @@ public class VidaJugador : MonoBehaviour
 
     public void RecibirDanio(int cantidadDanio, Vector2 posicionOrigen, bool ignorarInmunidad = false)
     {
-        // BLINDAJE DE SEGURIDAD: Si está en inmunidad o muerto, IGNORA CUALQUIER OTRO GOLPE
         if ((esInvulnerable && !ignorarInmunidad) || estaMuerto) return;
 
-        // Activa la invulnerabilidad DE INMEDIATO para evitar multillegadas en el mismo frame
         if (!ignorarInmunidad)
         {
             esInvulnerable = true;
         }
 
-        // 1. Restar vida (fijado a 1 por golpe normal si no es vacío)
         saludActual -= cantidadDanio;
         if (saludActual < 0) saludActual = 0;
 
         ActualizarUI();
 
-        // 2. Comprobar si murió
         if (saludActual <= 0)
         {
             Morir();
             return;
         }
 
-        // 3. Aplicar empujón (Knockback)
         if (rb != null && posicionOrigen != Vector2.zero)
         {
             float dirX = transform.position.x < posicionOrigen.x ? -1f : 1f;
@@ -84,7 +82,6 @@ public class VidaJugador : MonoBehaviour
             rb.AddForce(new Vector2(dirX * fuerzaKnockbackX, fuerzaKnockbackY), ForceMode2D.Impulse);
         }
 
-        // 4. Parpadeo de inmunidad
         StartCoroutine(RutinaInmunidad());
     }
 
@@ -139,7 +136,7 @@ public class VidaJugador : MonoBehaviour
         }
 
         if (sr != null) sr.enabled = true;
-        esInvulnerable = false; // Aquí recién recupera la vulnerabilidad
+        esInvulnerable = false;
     }
 
     // --- DETECCIÓN DE COLISIONES ---
@@ -149,7 +146,7 @@ public class VidaJugador : MonoBehaviour
         if (collision.gameObject.CompareTag("End"))
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene(6);
+            SceneManager.LoadScene(indiceEscenaFinal); // <-- USA LA VARIABLE AQUÍ
             return;
         }
 
@@ -168,7 +165,7 @@ public class VidaJugador : MonoBehaviour
         if (collision.CompareTag("End"))
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene(6);
+            SceneManager.LoadScene(indiceEscenaFinal); // <-- USA LA VARIABLE AQUÍ
             return;
         }
 

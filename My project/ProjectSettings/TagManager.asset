@@ -13,6 +13,7 @@ TagManager:
   - End
   - Disparojugador
   - Disparojefe
+  - Pico
   layers:
   - Default
   - TransparentFX

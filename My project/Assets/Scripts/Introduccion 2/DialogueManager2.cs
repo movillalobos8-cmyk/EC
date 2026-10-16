@@ -167,9 +167,11 @@ public class DialogueManager2 : MonoBehaviour
 
     void Update()
     {
-        if (isWaitingForChoice) return;
+        if (isWaitingForChoice)
+            return;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Se añade detección para Espacio, Enter (principal y teclado numérico) y Clic Izquierdo del mouse
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
         {
             if (isTyping)
                 CompleteLine();

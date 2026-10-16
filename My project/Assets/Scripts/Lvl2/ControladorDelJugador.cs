@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement; // <-- Necesario para la gestión de escenas
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(AudioSource))]
@@ -8,6 +9,13 @@ public class ControladorDelJugador : MonoBehaviour
     public float velocidadMovimiento = 8f;
     public float fuerzaSalto = 12f;
     public float fuerzaDobleSalto = 9f;
+
+    [Header("Cambio de Escena por Índice")]
+    [Tooltip("Etiqueta (Tag) del objeto que activa el cambio de escena")]
+    public string tagPisoFin = "end"; // <-- Header para la etiqueta a comparar
+
+    [Tooltip("Número de índice de la escena a cargar (según Build Settings)")]
+    public int indiceEscenaFin = 1; // <-- Header para cambiar el NÚMERO de la escena desde Unity
 
     [Header("Disparo del Jugador")]
     public Transform puntoDisparoArriba;      
@@ -151,10 +159,17 @@ public class ControladorDelJugador : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // Detecta el piso normal para reiniciar saltos
         if (collision.gameObject.CompareTag("Piso"))
         {
             estaEnSuelo = true;
             saltosRealizados = 0;
+        }
+
+        // Compara el Tag y carga la escena según el número de índice introducido en Unity
+        if (!string.IsNullOrEmpty(tagPisoFin) && collision.gameObject.CompareTag(tagPisoFin))
+        {
+            SceneManager.LoadScene(indiceEscenaFin);
         }
     }
 

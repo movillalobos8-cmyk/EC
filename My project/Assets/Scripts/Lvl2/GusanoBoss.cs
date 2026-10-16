@@ -75,6 +75,9 @@ public class GusanoBoss : MonoBehaviour
     private bool secuenciaIniciada = false;
     private Vector3 posicionInicialJugador;
 
+    // --- ESTADO DE MUERTE ---
+    private bool muerto = false;
+
     private void Awake()
     {
         impactosTotalesMaximos = totalBarras * disparosPorBarra;
@@ -130,7 +133,6 @@ public class GusanoBoss : MonoBehaviour
             panelControlesInicio.SetActive(true);
             Time.timeScale = 0f;
 
-            // Frena la música mientras lee las instrucciones
             if (musicManager != null)
             {
                 musicManager.StopMusic();
@@ -151,7 +153,6 @@ public class GusanoBoss : MonoBehaviour
 
         Time.timeScale = 1f;
 
-        // Comienza la música del juego al pulsar el botón
         if (musicManager != null)
         {
             musicManager.PlayBackgroundMusic();
@@ -180,6 +181,8 @@ public class GusanoBoss : MonoBehaviour
 
     private void Update()
     {
+        if (muerto) return;
+
         if (esperandoJugador)
         {
             if (jugador != null)
@@ -240,12 +243,15 @@ public class GusanoBoss : MonoBehaviour
     private IEnumerator RutinaIniciarCombate()
     {
         yield return new WaitForSeconds(3f);
-        secuenciaIniciada = true;
+        if (!muerto)
+        {
+            secuenciaIniciada = true;
+        }
     }
 
     public void RecibirDano(float cantidad)
     {
-        if (impactosTotalesActuales <= 0) return;
+        if (muerto || impactosTotalesActuales <= 0) return;
 
         impactosTotalesActuales -= (int)cantidad;
         if (impactosTotalesActuales < 0) impactosTotalesActuales = 0;
@@ -374,7 +380,7 @@ public class GusanoBoss : MonoBehaviour
 
     private void DispararProyectilDirigido(float velocidad)
     {
-        if (prefabProyectil == null || puntoDisparo == null || jugador == null) return;
+        if (muerto || prefabProyectil == null || puntoDisparo == null || jugador == null) return;
 
         GameObject proyectilObj = Instantiate(prefabProyectil, puntoDisparo.position, Quaternion.identity);
         ProyectilBoss proyectil = proyectilObj.GetComponent<ProyectilBoss>();
@@ -388,7 +394,7 @@ public class GusanoBoss : MonoBehaviour
 
     private void DispararRafagaFase3(float velocidad)
     {
-        if (prefabProyectil == null || puntoDisparo == null || direccionesFase3 == null) return;
+        if (muerto || prefabProyectil == null || puntoDisparo == null || direccionesFase3 == null) return;
 
         for (int i = 0; i < direccionesFase3.Length; i++)
         {
@@ -404,21 +410,37 @@ public class GusanoBoss : MonoBehaviour
         }
     }
 
-    // --- PANTALLA DE VICTORIA ---
+    // --- PANTALLA DE VICTORIA Y ORDEN ABSOLUTA DE DETENCIÓN ---
     private void DerrotarJefe()
     {
+        if (muerto) return;
+        muerto = true;
+
         Debug.Log("¡El Jefe ha sido derrotado!");
 
+        // 1. Detiene de golpe cualquier movimiento o ráfaga activa
+        StopAllCoroutines();
+
+        // 2. Apaga la hitbox de daño al piso inmediatamente
+        if (hitboxExtraEmbestida != null)
+        {
+            hitboxExtraEmbestida.DesactivarHitbox();
+        }
+
+        // 3. Activa Canvas de Victoria y reproduce sonido
         if (canvasVictoria != null) canvasVictoria.SetActive(true);
 
-        // Detiene la música de fondo y reproduce sonido de Victoria
         if (musicManager != null)
         {
             musicManager.PlayWinSound();
         }
 
+        // 4. Desactiva física y renderizado del jefe
         foreach (Collider2D c in GetComponentsInChildren<Collider2D>()) c.enabled = false;
         foreach (SpriteRenderer r in GetComponentsInChildren<SpriteRenderer>()) r.enabled = false;
+
+        // 5. Apaga este script para congelar el Update y evitar futuros ataques
+        this.enabled = false;
     }
 
     // --- PANTALLA DE DERROTA ---
@@ -426,7 +448,6 @@ public class GusanoBoss : MonoBehaviour
     {
         if (canvasDerrota != null) canvasDerrota.SetActive(true);
 
-        // Detiene la música de fondo y reproduce sonido de Derrota
         if (musicManager != null)
         {
             musicManager.PlayLoseSound();

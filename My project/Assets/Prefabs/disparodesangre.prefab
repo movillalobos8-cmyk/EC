@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3015684049273666623}
   - component: {fileID: -2698519880001136481}
   - component: {fileID: 6248951202767140968}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: disparodesangre
   m_TagString: Boss
   m_Icon: {fileID: 0}
