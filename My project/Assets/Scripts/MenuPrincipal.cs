@@ -1,107 +1,122 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro;
 
-public class MenuPrincipal : MonoBehaviour
+public class MenuProgreso : MonoBehaviour
 {
-    [Header("--- BOTONES MENÚ PRINCIPAL ---")]
-    public Button botonNuevaPartida;
-    public Button botonContinuar;
-    public TMP_Text textoBotonContinuar; // Opcional: muestra "Continuar (Niv. X)"
-    public Button botonSelectorNiveles;
+    [System.Serializable]
+    public class NivelBoton
+    {
+        [Tooltip("Botón de este nivel")]
+        public Button boton;
 
-    [Header("--- PANEL SELECTOR DE NIVELES ---")]
-    public GameObject panelSelectorNiveles; // El panel pop-up que muestra los botones de cada nivel
-    public Button[] botonesDeNivel;        // Arrastra aquí: Element 0 = Nivel 1, Element 1 = Nivel 2, etc.
+        [Tooltip("Número de escena en Build Profiles / Build Settings (el menú suele ser 0)")]
+        public int numeroDeEscena = 1;
+
+        [Tooltip("Opcional: icono de candado que se muestra mientras el nivel está bloqueado")]
+        public GameObject candado;
+    }
+
+    [Header("Botones del menú")]
+    public GameObject botonNuevaPartida;
+    public GameObject botonContinuar;
+    [Tooltip("Si está activo, 'Nueva partida' se oculta cuando ya hay progreso y solo queda 'Continuar'")]
+    public bool ocultarNuevaPartidaSiHayProgreso = false;
+
+    [Header("Panel de niveles")]
+    public GameObject panelNiveles;
+    [Tooltip("Opcional: panel del menú principal, se oculta mientras se ven los niveles")]
+    public GameObject panelMenuPrincipal;
+
+    [Header("Niveles (Elemento 0 = Nivel 1, Elemento 1 = Nivel 2, Elemento 2 = Nivel 3)")]
+    public NivelBoton[] niveles = new NivelBoton[3];
 
     private void Start()
     {
-        ActualizarEstadoMenu();
-        
-        if (panelSelectorNiveles != null)
+        Time.timeScale = 1f;
+
+        // Los botones de nivel se configuran por código (no los conectes a mano en el Inspector)
+        for (int i = 0; i < niveles.Length; i++)
         {
-            panelSelectorNiveles.SetActive(false);
+            if (niveles[i] == null || niveles[i].boton == null) continue;
+
+            int numeroNivel = i + 1;
+            niveles[i].boton.onClick.RemoveAllListeners();
+            niveles[i].boton.onClick.AddListener(() => IrANivel(numeroNivel));
+        }
+
+        ActualizarMenu();
+    }
+
+    private void ActualizarMenu()
+    {
+        bool hayProgreso = ProgresoJuego.PartidaEnCurso;
+
+        if (botonContinuar != null) botonContinuar.SetActive(hayProgreso);
+
+        if (botonNuevaPartida != null)
+            botonNuevaPartida.SetActive(!(hayProgreso && ocultarNuevaPartidaSiHayProgreso));
+
+        if (panelNiveles != null) panelNiveles.SetActive(false);
+        if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(true);
+
+        ActualizarNiveles();
+    }
+
+    private void ActualizarNiveles()
+    {
+        for (int i = 0; i < niveles.Length; i++)
+        {
+            if (niveles[i] == null) continue;
+
+            bool desbloqueado = ProgresoJuego.NivelDesbloqueado(i + 1);
+
+            if (niveles[i].boton != null) niveles[i].boton.interactable = desbloqueado;
+            if (niveles[i].candado != null) niveles[i].candado.SetActive(!desbloqueado);
         }
     }
 
-    private void ActualizarEstadoMenu()
+    // --- Conecta estos métodos al OnClick() de cada botón ---
+
+    // Botón "Nueva partida"
+    public void NuevaPartida()
     {
-        int nivelAlcanzado = GameDataManager.ObtenerNivelAlcanzado();
+        ProgresoJuego.NuevaPartida();
 
-        // Si ya pasaron al menos el Nivel 1 (nivelAlcanzado >= 2)
-        if (nivelAlcanzado > 1)
-        {
-            if (botonContinuar != null)
-            {
-                botonContinuar.gameObject.SetActive(true);
-                if (textoBotonContinuar != null)
-                {
-                    textoBotonContinuar.text = "Continuar (Nivel " + nivelAlcanzado + ")";
-                }
-            }
-
-            if (botonSelectorNiveles != null)
-            {
-                botonSelectorNiveles.gameObject.SetActive(true);
-            }
-        }
-        else
-        {
-            // Primera vez jugando o le dio a Nueva Partida
-            if (botonContinuar != null) botonContinuar.gameObject.SetActive(false);
-            if (botonSelectorNiveles != null) botonSelectorNiveles.gameObject.SetActive(false);
-        }
-
-        // Configura la interacción de los botones dentro del Selector de Niveles
-        if (botonesDeNivel != null)
-        {
-            for (int i = 0; i < botonesDeNivel.Length; i++)
-            {
-                int numNivel = i + 1;
-                // Si el nivel está dentro del progreso alcanzado, se activa; si no, queda bloqueado
-                botonesDeNivel[i].interactable = (numNivel <= nivelAlcanzado);
-            }
-        }
+        if (niveles.Length > 0 && niveles[0] != null)
+            CargarEscena(niveles[0].numeroDeEscena);
     }
 
-    // --- ACCIONES DE LOS BOTONES ---
-
-    // Botón "Nueva Partida"
-    public void BotonNuevaPartida()
+    // Botón "Continuar": abre la sección de niveles
+    public void Continuar()
     {
-        GameDataManager.ReiniciarProgreso();
-        SceneManager.LoadScene("Nivel1"); // Asegúrate de que tu primera escena se llame así en el Build Settings
+        ActualizarNiveles();
+        if (panelNiveles != null) panelNiveles.SetActive(true);
+        if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(false);
     }
 
-    // Botón "Continuar"
-    public void BotonContinuar()
+    // Botón "Volver" dentro del panel de niveles
+    public void CerrarPanelNiveles()
     {
-        int nivelACargar = GameDataManager.ObtenerNivelAlcanzado();
-        SceneManager.LoadScene("Nivel" + nivelACargar); // Carga "Nivel2", "Nivel3", etc.
+        if (panelNiveles != null) panelNiveles.SetActive(false);
+        if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(true);
     }
 
-    // Botón "Selector de Niveles" (Abre la ventana con los niveles)
-    public void AbrirSelectorNiveles()
+    public void IrANivel(int numeroNivel)
     {
-        if (panelSelectorNiveles != null)
-        {
-            panelSelectorNiveles.SetActive(true);
-        }
+        if (!ProgresoJuego.NivelDesbloqueado(numeroNivel)) return;
+        if (numeroNivel < 1 || numeroNivel > niveles.Length) return;
+
+        NivelBoton nivel = niveles[numeroNivel - 1];
+        if (nivel == null) return;
+
+        Debug.Log("[MenuProgreso] Nivel " + numeroNivel + " -> escena " + nivel.numeroDeEscena);
+        CargarEscena(nivel.numeroDeEscena);
     }
 
-    // Botón de Cerrar/Volver del Selector de Niveles
-    public void CerrarSelectorNiveles()
+    private void CargarEscena(int indice)
     {
-        if (panelSelectorNiveles != null)
-        {
-            panelSelectorNiveles.SetActive(false);
-        }
-    }
-
-    // Función para los botones del panel de selector ("Nivel 1", "Nivel 2", etc.)
-    public void CargarNivelDirecto(int numeroNivel)
-    {
-        SceneManager.LoadScene("Nivel" + numeroNivel);
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(indice);
     }
 }

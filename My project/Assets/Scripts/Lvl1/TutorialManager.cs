@@ -41,6 +41,11 @@ namespace Nivel3
         [Header("Configuración de Texto")]
         public float textSpeed = 0.03f;
 
+        [Header("Música")]
+        [Tooltip("Arrastra el GameMusicManager. Si lo dejas vacío, lo busca solo.")]
+        public GameMusicManager musicManager;
+        private bool musicaDetenida = false;
+
         private string[] parrafostutorial1;
         private string[] parrafostutorial2;
         private int currentParagraphIndex = 0;
@@ -53,6 +58,11 @@ namespace Nivel3
 
         private void Start()
         {
+            if (musicManager == null)
+                musicManager = FindFirstObjectByType<GameMusicManager>();
+
+            StartCoroutine(PausarMusicaTrasUnFrame());
+
             if (panelTutorial1 != null) panelTutorial1.SetActive(true);
             if (panelControles != null) panelControles.SetActive(false);
             if (panelTutorial2 != null) panelTutorial2.SetActive(false);
@@ -220,6 +230,8 @@ namespace Nivel3
         {
             if (panelControles != null) panelControles.SetActive(false);
 
+            ReanudarMusica(); // La música vuelve al salir de los controles
+
             estadoActual = EstadoTutorial.EsperandoObstaculo;
             Time.timeScale = 1f;
 
@@ -267,6 +279,7 @@ namespace Nivel3
         {
             Time.timeScale = 0f;
             estadoActual = EstadoTutorial.Dialogo2;
+            DetenerMusica(); // La secretaria vuelve a hablar: música en pausa
 
             // Reinicia variables de control para evitar letras duplicadas
             currentParagraphIndex = 0;
@@ -289,6 +302,7 @@ namespace Nivel3
         public void BotonEstoyPreparado()
         {
             estadoActual = EstadoTutorial.JuegoEnCurso;
+            ReanudarMusica(); // Empieza el juego: la música continúa
 
             if (panelTutorial2 != null) panelTutorial2.SetActive(false);
 
@@ -301,6 +315,30 @@ namespace Nivel3
 
             Time.timeScale = 1f;
             this.enabled = false;
+        }
+
+        private IEnumerator PausarMusicaTrasUnFrame()
+        {
+            yield return null; // Espera un frame para que el GameMusicManager ya haya arrancado la música
+            DetenerMusica();   // La música queda en pausa mientras habla la secretaria
+        }
+
+        private void DetenerMusica()
+        {
+            if (musicManager == null)
+        {
+            Debug.LogWarning("[Tutorial] No se encontró el GameMusicManager en la escena.");
+            return;
+        }
+            musicManager.PauseMusic();
+            musicaDetenida = true;
+        }
+
+        private void ReanudarMusica()
+        {
+            if (musicManager == null || !musicaDetenida) return;
+            musicManager.ResumeMusic();
+            musicaDetenida = false;
         }
 
         private void DesactivarSpawners()

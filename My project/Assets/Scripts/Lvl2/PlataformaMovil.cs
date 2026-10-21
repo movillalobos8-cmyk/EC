@@ -9,12 +9,22 @@ public class PlataformaMovil : MonoBehaviour
     public float limiteDerecho = 5f;
 
     [Header("Configuración de Movimiento")]
-    public float velocidad = 3f;
+    public float velocidad = 6f;
+
+    [Tooltip("OPCIONAL: segundos que tarda en cruzar de un límite a otro. Si es mayor que 0, ignora 'Velocidad' y así TODAS las plataformas llegan a los límites al mismo tiempo aunque tengan distancias distintas.")]
+    public float duracionTramo = 0f;
+
+    [Header("Pausa en los Límites")]
+    [Tooltip("Segundos que se queda frenada al llegar a cada límite")]
+    public float tiempoDePausa = 2f;
 
     private Vector3 puntoInicio;
     private Vector3 posIzquierda;
     private Vector3 posDerecha;
     private Vector3 objetivoActual;
+
+    private float velocidadReal;
+    private float temporizadorPausa = 0f;
 
     private void Start()
     {
@@ -22,23 +32,35 @@ public class PlataformaMovil : MonoBehaviour
         posIzquierda = puntoInicio + Vector3.left * limiteIzquierdo;
         posDerecha = puntoInicio + Vector3.right * limiteDerecho;
 
-        objetivoActual = posDerecha;
+        // Si ya empieza pegada al límite derecho, su primer destino es el izquierdo.
+        // Así NO cuenta como "llegada" el estar ya en un límite al inicio y todas arrancan a la vez.
+        if (limiteDerecho <= 0.05f && limiteIzquierdo > 0.05f)
+            objetivoActual = posIzquierda;
+        else
+            objetivoActual = posDerecha;
+
+        // Velocidad: fija, o calculada para que todas tarden lo mismo en cada tramo
+        float distanciaTramo = Vector3.Distance(posIzquierda, posDerecha);
+        velocidadReal = (duracionTramo > 0f) ? distanciaTramo / duracionTramo : velocidad;
     }
 
     private void Update()
     {
-        // Mueve la plataforma hacia el objetivo
-        transform.position = Vector3.MoveTowards(transform.position, objetivoActual, velocidad * Time.deltaTime);
-
-        // Si llega al límite derecho, cambia a la izquierda
-        if (Vector3.Distance(transform.position, posDerecha) < 0.05f)
+        // Si está en pausa, solo cuenta el tiempo y no se mueve
+        if (temporizadorPausa > 0f)
         {
-            objetivoActual = posIzquierda;
+            temporizadorPausa -= Time.deltaTime;
+            return;
         }
-        // Si llega al límite izquierdo, cambia a la derecha
-        else if (Vector3.Distance(transform.position, posIzquierda) < 0.05f)
+
+        // Mueve la plataforma hacia el objetivo
+        transform.position = Vector3.MoveTowards(transform.position, objetivoActual, velocidadReal * Time.deltaTime);
+
+        // Al llegar al objetivo: se frena y luego va hacia el límite contrario
+        if (Vector3.Distance(transform.position, objetivoActual) < 0.05f)
         {
-            objetivoActual = posDerecha;
+            objetivoActual = (objetivoActual == posDerecha) ? posIzquierda : posDerecha;
+            temporizadorPausa = tiempoDePausa;
         }
     }
 

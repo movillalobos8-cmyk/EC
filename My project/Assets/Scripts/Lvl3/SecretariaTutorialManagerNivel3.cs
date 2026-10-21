@@ -14,21 +14,25 @@ public class SecretariaTutorialManagerNivel3 : MonoBehaviour
     public GameObject uiControles;
     public Button estoyPreparadoButton; // Botón "Estoy Preparado" en el panel de controles
 
+    [Header("3. Objetos a Congelar Estrictamente")]
+    [Tooltip("Arrastra aquí el GameObject de la Nave / Jugador")]
+    public GameObject jugador;
+    [Tooltip("Arrastra cualquier script de movimiento (Cámara, Nave, Enemigos) que deba apagarse durante el tutorial")]
+    public MonoBehaviour[] scriptsAMoverOApagar;
+
     [Header("Secretaria")]
     public Image secretariaImage;
     public Sprite idleSprite;
     public Sprite talkingSprite;
 
     [Header("Configuración Imagen 1 (Esófago)")]
-    [Tooltip("Marcar si se desea mostrar la imagen 1 durante el diálogo")]
     public bool mostrarImagenEsofago = true;
-    public Image imagenEsofago; // Imagen de referencia del esófago
+    public Image imagenEsofago;
     public string fraseTriggerImagenEsofago = "en el esófago";
 
     [Header("Configuración Imagen 2 (Extra)")]
-    [Tooltip("Marcar si se desea mostrar la imagen extra durante el diálogo")]
     public bool mostrarImagenExtra = false;
-    public Image imagenExtra; // Nueva imagen extra opcional
+    public Image imagenExtra;
     public string fraseTriggerImagenExtra = "comida";
 
     [Header("Texto del Tutorial")]
@@ -41,6 +45,11 @@ public class SecretariaTutorialManagerNivel3 : MonoBehaviour
     [Header("Configuración")]
     public float textSpeed = 0.03f;
 
+    [Header("Música")]
+    [Tooltip("Arrastra el GameMusicManager. Si lo dejas vacío, lo busca solo.")]
+    public GameMusicManager musicManager;
+    private bool musicaDetenida = false;
+
     // Control interno de párrafos
     private string[] parrafostutorial;
     private int currentParagraphIndex = 0;
@@ -51,9 +60,20 @@ public class SecretariaTutorialManagerNivel3 : MonoBehaviour
     private bool leyendoDialogos = true;
     private bool juegoIniciado = false;
 
+    // Los spawners leen esto para saber cuándo empezar a contar su delay inicial
+    public bool TutorialTerminado { get; private set; }
+
     private void Start()
     {
-        // 1. Estado inicial de paneles
+        if (musicManager == null)
+            musicManager = FindFirstObjectByType<GameMusicManager>();
+
+        StartCoroutine(PausarMusicaTrasUnFrame());
+
+        // --- CONGELAMIENTO ABSOLUTO AL INICIAR ---
+        AplicarPausaAbsoluta(true);
+
+        // Estado inicial de paneles UI
         if (uiTutorial != null) uiTutorial.SetActive(true);
         if (uiControles != null) uiControles.SetActive(false);
 
@@ -74,14 +94,11 @@ public class SecretariaTutorialManagerNivel3 : MonoBehaviour
         if (imagenEsofago != null) imagenEsofago.gameObject.SetActive(false);
         if (imagenExtra != null) imagenExtra.gameObject.SetActive(false);
 
-        // Desactivar spawners al inicio
+        // Desactivar spawners
         foreach (ObstacleSpawner spawner in obstacleSpawners)
         {
             if (spawner != null) spawner.enabled = false;
         }
-
-        // Pausar tiempo de juego
-        Time.timeScale = 0f;
 
         // Cargar párrafos
         if (!string.IsNullOrEmpty(tutorialText))
@@ -159,7 +176,6 @@ public class SecretariaTutorialManagerNivel3 : MonoBehaviour
 
     private void ComprobarTriggers(string textoActual)
     {
-        // Trigger para la Imagen 1 (Esófago)
         if (mostrarImagenEsofago && imagenEsofago != null)
         {
             if (!string.IsNullOrEmpty(fraseTriggerImagenEsofago) && textoActual.Contains(fraseTriggerImagenEsofago))
@@ -168,7 +184,6 @@ public class SecretariaTutorialManagerNivel3 : MonoBehaviour
             }
         }
 
-        // Trigger para la Imagen 2 (Extra)
         if (mostrarImagenExtra && imagenExtra != null)
         {
             if (!string.IsNullOrEmpty(fraseTriggerImagenExtra) && textoActual.Contains(fraseTriggerImagenExtra))
@@ -197,8 +212,14 @@ public class SecretariaTutorialManagerNivel3 : MonoBehaviour
     public void BotonEstoyPreparado()
     {
         juegoIniciado = true;
+        TutorialTerminado = true; // Los spawners empiezan a contar su delay desde aquí
 
         if (uiControles != null) uiControles.SetActive(false);
+
+        ReanudarMusica(); // La música vuelve al salir de los controles
+
+        // --- DESCONGELAR TODO STRICTAMENTE ---
+        AplicarPausaAbsoluta(false);
 
         // Activar Spawners
         foreach (ObstacleSpawner spawner in obstacleSpawners)
@@ -211,7 +232,83 @@ public class SecretariaTutorialManagerNivel3 : MonoBehaviour
             LevelManager.Instance.StartLevel();
         }
 
-        Time.timeScale = 1f;
         this.enabled = false;
+    }
+
+    private IEnumerator PausarMusicaTrasUnFrame()
+    {
+        yield return null; // Espera un frame para que el GameMusicManager ya haya arrancado la música
+        DetenerMusica();   // La música queda en pausa mientras habla la secretaria
+    }
+
+    private void DetenerMusica()
+    {
+        if (musicManager == null)
+        {
+            Debug.LogWarning("[Tutorial] No se encontró el GameMusicManager en la escena.");
+            return;
+        }
+        musicManager.PauseMusic();
+        musicaDetenida = true;
+    }
+
+    private void ReanudarMusica()
+    {
+        if (musicManager == null || !musicaDetenida) return;
+        musicManager.ResumeMusic();
+        musicaDetenida = false;
+    }
+
+    /// <summary>
+    /// Forzado estricto de pausa / reanudación total de la escena.
+    /// </summary>
+    private void AplicarPausaAbsoluta(bool pausar)
+    {
+        // 1. Tiempo global de Unity
+        Time.timeScale = pausar ? 0f : 1f;
+
+        // 2. Físicas e inercia del jugador
+        if (jugador != null)
+        {
+            Rigidbody2D rb2d = jugador.GetComponent<Rigidbody2D>();
+            if (rb2d != null)
+            {
+                if (pausar)
+                {
+                    rb2d.linearVelocity = Vector2.zero;
+                    rb2d.simulated = false; // Desactiva el motor de físicas
+                }
+                else
+                {
+                    rb2d.simulated = true;
+                }
+            }
+
+            Rigidbody rb3d = jugador.GetComponent<Rigidbody>();
+            if (rb3d != null)
+            {
+                if (pausar)
+                {
+                    rb3d.linearVelocity = Vector3.zero;
+                    rb3d.isKinematic = true;
+                }
+                else
+                {
+                    rb3d.isKinematic = false;
+                }
+            }
+        }
+
+        // 3. Desactivar / Activar manualmente los scripts de control
+        if (scriptsAMoverOApagar != null)
+        {
+            foreach (MonoBehaviour script in scriptsAMoverOApagar)
+            {
+                if (script != null)
+                {
+                    script.enabled = !pausar;
+                }
+            }
+        }
     }
 }

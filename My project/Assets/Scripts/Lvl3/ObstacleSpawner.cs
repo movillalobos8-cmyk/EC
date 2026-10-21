@@ -1,16 +1,19 @@
-using System.Collections;
 using UnityEngine;
 
 namespace Nivel3
 {
     public class ObstacleSpawner : MonoBehaviour
     {
+        [Header("Tutorial")]
+        [Tooltip("Arrastra aquí el SecretariaTutorialManagerNivel3. Si lo dejas vacío, lo busca solo.")]
+        public SecretariaTutorialManagerNivel3 tutorial;
+
         [Header("Prefabs de Obstáculos")]
         public GameObject[] prefabsObstaculos; // Arrastra aquí tus prefabs con las distintas texturas
 
         [Header("Tiempo de Espera")]
-        [Tooltip("Segundos que esperará antes de spawnear el primer obstáculo")]
-        public float delayInicial = 2f; 
+        [Tooltip("Segundos que esperará DESPUÉS de terminar el tutorial antes de spawnear el primer obstáculo")]
+        public float delayInicial = 2f;
 
         [Header("Configuración de Tiempo")]
         public float spawnRate = 2.5f;
@@ -24,30 +27,42 @@ namespace Nivel3
         public float posYAbajo = -3f;
 
         private float timer = 0f;
+        private float timerDelayInicial = 0f;
         private int pasoPatron = 0;
         private bool listoParaSpawnear = false;
 
-        private void OnEnable()
+        private void Awake()
         {
-            // Reinicia el estado cuando el script se activa (al pulsar "Estoy Preparado")
-            listoParaSpawnear = false;
-            timer = 0f;
-            pasoPatron = 0;
-
-            StartCoroutine(EsperarDelayInicial());
+            if (tutorial == null)
+                tutorial = FindFirstObjectByType<SecretariaTutorialManagerNivel3>();
         }
 
-        private IEnumerator EsperarDelayInicial()
+        private void OnEnable()
         {
-            // Espera el tiempo configurado en el Inspector
-            yield return new WaitForSeconds(delayInicial);
-            listoParaSpawnear = true;
+            // Reinicia el estado cada vez que el script se activa
+            listoParaSpawnear = false;
+            timer = 0f;
+            timerDelayInicial = 0f;
+            pasoPatron = 0;
         }
 
         void Update()
         {
-            // No hace nada hasta que pase el tiempo del delay inicial
-            if (!listoParaSpawnear) return;
+            // 1. Mientras el tutorial no haya terminado (no se pulsó "Estoy Preparado"), no cuenta nada
+            if (tutorial != null && !tutorial.TutorialTerminado) return;
+
+            // 2. Si el juego está congelado por otra razón, tampoco cuenta
+            if (Time.timeScale <= 0f) return;
+
+            // 3. Delay inicial: empieza a contar recién cuando terminó el tutorial
+            if (!listoParaSpawnear)
+            {
+                timerDelayInicial += Time.deltaTime;
+                if (timerDelayInicial >= delayInicial)
+                    listoParaSpawnear = true;
+                else
+                    return;
+            }
 
             timer += Time.deltaTime;
 

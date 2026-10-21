@@ -17,6 +17,24 @@ public class GusanoBoss : MonoBehaviour
     public Transform puntoDisparo;
     public GameObject prefabProyectil;
 
+    [Header("--- EXPRESIONES (CAMBIO MOMENTÁNEO DE IMAGEN) ---")]
+    [Tooltip("SpriteRenderer que muestra al gusano. Si lo dejas vacío, busca el primero en este objeto o en sus hijos.")]
+    public SpriteRenderer spriteRendererGusano;
+    [Tooltip("Imagen del gusano con los ojos cerrados (parpadeo antes de disparar)")]
+    public Sprite spriteOjosCerrados;
+    [Tooltip("Imagen del gusano enojado (al embestir)")]
+    public Sprite spriteEnojado;
+    [Tooltip("Cuántas veces parpadea antes de disparar")]
+    public int cantidadParpadeos = 2;
+    [Tooltip("Segundos con los ojos cerrados en cada parpadeo")]
+    public float duracionOjosCerrados = 0.18f;
+    [Tooltip("Segundos con los ojos abiertos entre parpadeos")]
+    public float pausaEntreParpadeos = 0.12f;
+    [Tooltip("Segundos ANTES de embestir en los que ya se pone enojado")]
+    public float tiempoAvisoEnojo = 1f;
+    [Tooltip("0 = enojado hasta que termina la embestida. Mayor que 0 = se calma esos segundos después de que empieza a embestir.")]
+    public float duracionEnojo = 0f;
+
     [Header("--- HITBOX EXTRA EN EL SUELO ---")]
     public HitboxSueloBoss hitboxExtraEmbestida;
 
@@ -35,6 +53,12 @@ public class GusanoBoss : MonoBehaviour
     public Sprite[] spritesBarraVida;
     public GameObject canvasVictoria;
     public GameObject canvasDerrota;
+
+    [Header("--- INICIO DEL COMBATE ---")]
+    [Tooltip("Segundos que espera desde que el jugador se mueve hasta que el jefe empieza a atacar (antes era 3)")]
+    public float retrasoInicioCombate = 2f;
+    [Tooltip("Segundos hasta el PRIMER disparo una vez que empieza el combate (después sigue el cooldown normal de la fase)")]
+    public float primerDisparoTrasInicio = 1.5f;
 
     [Header("--- FASES DEL JEFE ---")]
     public FaseBoss faseActual = FaseBoss.Fase1;
@@ -78,6 +102,16 @@ public class GusanoBoss : MonoBehaviour
     // --- ESTADO DE MUERTE ---
     private bool muerto = false;
 
+    // --- EXPRESIONES TEMPORALES ---
+    private bool parpadeoActivo = false;
+    private bool enojoActivo = false;
+    private bool avisoDisparoMostrado = false;
+
+    private float DuracionTotalParpadeo
+    {
+        get { return cantidadParpadeos * (duracionOjosCerrados + pausaEntreParpadeos); }
+    }
+
     private void Awake()
     {
         impactosTotalesMaximos = totalBarras * disparosPorBarra;
@@ -98,6 +132,11 @@ public class GusanoBoss : MonoBehaviour
         if (musicManager == null)
         {
             musicManager = FindObjectOfType<GameMusicManager>();
+        }
+
+        if (spriteRendererGusano == null)
+        {
+            spriteRendererGusano = GetComponentInChildren<SpriteRenderer>();
         }
 
         if (hitboxExtraEmbestida != null) hitboxExtraEmbestida.DesactivarHitbox();
@@ -221,6 +260,19 @@ public class GusanoBoss : MonoBehaviour
             velProyectil = velProyectilFase3;
         }
 
+        // AVISO: parpadea justo antes de disparar (termina cuando sale el disparo, sin retrasarlo)
+        if (!avisoDisparoMostrado && timerDisparo > 0f && timerDisparo <= DuracionTotalParpadeo)
+        {
+            avisoDisparoMostrado = true;
+            StartCoroutine(RutinaParpadeo());
+        }
+
+        // AVISO: se enoja 1 segundo antes de embestir
+        if (!enojoActivo && timerEmbestida > 0f && timerEmbestida <= tiempoAvisoEnojo)
+        {
+            enojoActivo = true;
+        }
+
         if (timerEmbestida <= 0)
         {
             StartCoroutine(RutinaEmbestidaPiso(velEmbestida));
@@ -237,15 +289,55 @@ public class GusanoBoss : MonoBehaviour
                 DispararProyectilDirigido(velProyectil);
             }
             timerDisparo = cdDisparo;
+            avisoDisparoMostrado = false;
         }
+    }
+
+    // Se ejecuta DESPUÉS de que el Animator actualiza el sprite, así el cambio de imagen
+    // es momentáneo y la animación normal sigue corriendo por debajo.
+    private void LateUpdate()
+    {
+        if (muerto || spriteRendererGusano == null) return;
+
+        if (enojoActivo && spriteEnojado != null)
+        {
+            spriteRendererGusano.sprite = spriteEnojado;
+        }
+        else if (parpadeoActivo && spriteOjosCerrados != null)
+        {
+            spriteRendererGusano.sprite = spriteOjosCerrados;
+        }
+    }
+
+    private IEnumerator RutinaParpadeo()
+    {
+        for (int i = 0; i < cantidadParpadeos; i++)
+        {
+            parpadeoActivo = true;
+            yield return new WaitForSeconds(duracionOjosCerrados);
+
+            parpadeoActivo = false;
+            yield return new WaitForSeconds(pausaEntreParpadeos);
+        }
+
+        parpadeoActivo = false;
+    }
+
+    private IEnumerator ApagarEnojoTras(float segundos)
+    {
+        yield return new WaitForSeconds(segundos);
+        enojoActivo = false;
     }
 
     private IEnumerator RutinaIniciarCombate()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(retrasoInicioCombate);
         if (!muerto)
         {
             secuenciaIniciada = true;
+
+            // El primer disparo sale antes que el cooldown normal, para que la fase 1 no empiece tan lenta
+            timerDisparo = Mathf.Min(timerDisparo, primerDisparoTrasInicio);
         }
     }
 
@@ -300,6 +392,9 @@ public class GusanoBoss : MonoBehaviour
 
     private void ResetearTimers()
     {
+        avisoDisparoMostrado = false;
+        if (!haciendoAccion) enojoActivo = false;
+
         if (faseActual == FaseBoss.Fase1)
         {
             timerEmbestida = cdEmbestidaFase1;
@@ -320,6 +415,12 @@ public class GusanoBoss : MonoBehaviour
     private IEnumerator RutinaEmbestidaPiso(float velocidad)
     {
         haciendoAccion = true;
+        avisoDisparoMostrado = false; // Si todavía debe disparar después, volverá a parpadear
+
+        // SE ENOJA al embestir
+        enojoActivo = true;
+        if (duracionEnojo > 0f) StartCoroutine(ApagarEnojoTras(duracionEnojo));
+
         float espera = (faseActual == FaseBoss.Fase3) ? tiempoEnPiso * 0.3f : tiempoEnPiso;
 
         if (hitboxExtraEmbestida != null) hitboxExtraEmbestida.DesactivarHitbox();
@@ -349,6 +450,9 @@ public class GusanoBoss : MonoBehaviour
 
             yield return StartCoroutine(MoverYRotarFluido(posicionOriginal, rotacionOriginal, velocidad));
         }
+
+        // Termina la embestida: vuelve su animación normal
+        if (duracionEnojo <= 0f) enojoActivo = false;
 
         haciendoAccion = false;
     }
@@ -420,6 +524,8 @@ public class GusanoBoss : MonoBehaviour
 
         // 1. Detiene de golpe cualquier movimiento o ráfaga activa
         StopAllCoroutines();
+        parpadeoActivo = false;
+        enojoActivo = false;
 
         // 2. Apaga la hitbox de daño al piso inmediatamente
         if (hitboxExtraEmbestida != null)

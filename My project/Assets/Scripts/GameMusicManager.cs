@@ -13,6 +13,8 @@ public class GameMusicManager : MonoBehaviour
     [Header("Config")]
     public bool playOnStart = true;
 
+    private bool musicaPausada = false;
+
     void Awake()
     {
         if (audioSource == null)
@@ -34,6 +36,7 @@ public class GameMusicManager : MonoBehaviour
         if (audioSource == null || backgroundMusic == null)
             return;
 
+        musicaPausada = false;
         audioSource.Stop();
         audioSource.clip = backgroundMusic;
         audioSource.loop = true;
@@ -50,11 +53,40 @@ public class GameMusicManager : MonoBehaviour
         PlayResultSound(loseSound);
     }
 
+    // Corta la música del todo (al volver a sonar empieza desde el principio)
     public void StopMusic()
     {
+        musicaPausada = false;
+
         if (audioSource != null && audioSource.isPlaying)
         {
             audioSource.Stop();
+        }
+    }
+
+    // Pausa la música sin perder el punto en el que iba
+    public void PauseMusic()
+    {
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Pause();
+            musicaPausada = true;
+        }
+    }
+
+    // Continúa la música justo donde se pausó. Si no estaba sonando nada, arranca la música de fondo.
+    public void ResumeMusic()
+    {
+        if (audioSource == null) return;
+
+        if (musicaPausada)
+        {
+            audioSource.UnPause();
+            musicaPausada = false;
+        }
+        else if (!audioSource.isPlaying)
+        {
+            PlayBackgroundMusic();
         }
     }
 
@@ -63,6 +95,7 @@ public class GameMusicManager : MonoBehaviour
         if (audioSource == null || resultSound == null)
             return;
 
+        musicaPausada = false;
         audioSource.Stop();
         audioSource.clip = resultSound;
         audioSource.loop = false;

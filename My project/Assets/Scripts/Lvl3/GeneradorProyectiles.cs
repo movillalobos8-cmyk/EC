@@ -48,6 +48,8 @@ public class GeneradorProyectiles : MonoBehaviour
 
     [Header("Music")]
     public AudioSource musicSource;
+    public GameObject musicManager;                     // Arrastra aquí el GameObject del MusicManager
+    public string nombreMusicManager = "MusicManager";  // Respaldo: se busca por nombre si no lo asignas
 
     private bool usarVarianteA = true;
     private int contadorIndividuales = 0;
@@ -142,9 +144,20 @@ public class GeneradorProyectiles : MonoBehaviour
 
     private IEnumerator EndingSequence()
     {
+        // Apagar la música y desactivar el MusicManager por completo
         if (musicSource != null && musicSource.isPlaying)
         {
             musicSource.Stop();
+        }
+
+        if (musicManager == null)
+        {
+            musicManager = GameObject.Find(nombreMusicManager);
+        }
+
+        if (musicManager != null)
+        {
+            musicManager.SetActive(false);
         }
 
         if (videoPanel != null)

@@ -37,8 +37,18 @@ public class SecretariaTutorialManagerNivel2 : MonoBehaviour
     [Header("Configuración")]
     public float textSpeed = 0.03f;
 
+    [Header("Música")]
+    [Tooltip("Arrastra el GameMusicManager. Si lo dejas vacío, lo busca solo.")]
+    public GameMusicManager musicManager;
+    private bool musicaDetenida = false;
+
     private void Start()
     {
+        if (musicManager == null)
+            musicManager = FindFirstObjectByType<GameMusicManager>();
+
+        StartCoroutine(PausarMusicaTrasUnFrame());
+
         if (uiTutorial != null) uiTutorial.SetActive(true);
         if (uiControles != null) uiControles.SetActive(false); // Nos aseguramos de que empiece oculto
         if (continueButton != null) continueButton.gameObject.SetActive(false);
@@ -115,6 +125,8 @@ public class SecretariaTutorialManagerNivel2 : MonoBehaviour
             uiControles.SetActive(false);
         }
 
+        ReanudarMusica(); // La música vuelve al salir de los controles
+
         // 2. Encender los spawners y despausar el juego
         foreach (ObstacleSpawner spawner in obstacleSpawners)
         {
@@ -127,5 +139,29 @@ public class SecretariaTutorialManagerNivel2 : MonoBehaviour
         }
 
         Time.timeScale = 1f;
+    }
+
+    private IEnumerator PausarMusicaTrasUnFrame()
+    {
+        yield return null; // Espera un frame para que el GameMusicManager ya haya arrancado la música
+        DetenerMusica();   // La música queda en pausa mientras habla la secretaria
+    }
+
+    private void DetenerMusica()
+    {
+        if (musicManager == null)
+        {
+            Debug.LogWarning("[Tutorial] No se encontró el GameMusicManager en la escena.");
+            return;
+        }
+        musicManager.PauseMusic();
+        musicaDetenida = true;
+    }
+
+    private void ReanudarMusica()
+    {
+        if (musicManager == null || !musicaDetenida) return;
+        musicManager.ResumeMusic();
+        musicaDetenida = false;
     }
 }
